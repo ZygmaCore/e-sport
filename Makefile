@@ -15,8 +15,8 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Commit"
-	git push
+	git commit -m "add migration"
+	git push -u origin main
 
 # Docker Commands
 
@@ -41,4 +41,8 @@ migrate:
 	docker exec -it laravel_app php artisan migrate
 
 serve:
+	docker exec -it laravel_app php artisan serve --host=0.0.0.0
+
+start:
+	docker compose up -d
 	docker exec -it laravel_app php artisan serve --host=0.0.0.0

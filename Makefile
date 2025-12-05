@@ -15,7 +15,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "add migration"
+	git commit -m "add route + view + layout"
 	git push -u origin main
 
 # Docker Commands

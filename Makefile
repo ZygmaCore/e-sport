@@ -15,7 +15,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "add route + view + layout"
+	git commit -m "Update Hero Section Profil Fansclub"
 	git push -u origin main
 
 # Docker Commands

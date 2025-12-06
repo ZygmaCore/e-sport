@@ -23,11 +23,4 @@
             {{ $subtitle }}
         </p>
     @endif
-
-    {{-- Jika butuh konten tambahan --}}
-    {{-- @if(trim($slot))
-        <div class="mt-4">
-            {{ $slot }}
-        </div>
-    @endif --}}
 </div>

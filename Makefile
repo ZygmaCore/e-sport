@@ -15,7 +15,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Create Controller"
+	git commit -m "News for Frontend"
 	git push -u origin main
 
 # Docker Commands

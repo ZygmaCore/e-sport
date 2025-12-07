@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Frontend\NewsController;
 use Illuminate\Support\Facades\Route;
 
 // Frontend
@@ -8,10 +9,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn () => view('frontend.home'));
 
 // News
-Route::prefix('news')->group(function () {
-    Route::get('/', fn () => view('frontend.news.index'));
-    Route::get('{slug}', fn () => view('frontend.news.show'));
-});
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 // Member
 Route::prefix('member')->group(function () {

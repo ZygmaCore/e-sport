@@ -19,7 +19,7 @@
             <a href="/" class="hover:text-blue-600">HOME</a>
             <a href="/news" class="hover:text-blue-600">NEWS</a>
             <a href="/merchandise" class="hover:text-blue-600">MERCHANDISE</a>
-            <a href="register/member" class="hover:text-blue-600">MEMBERSHIP</a>
+            <a href="/register/member" class="hover:text-blue-600">MEMBERSHIP</a>
 
             <form action="/admin/logout" method="POST" class="inline">
                 @csrf

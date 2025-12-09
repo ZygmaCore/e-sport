@@ -15,7 +15,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "final news for member"
+	git commit -m "fix image bug"
 	git push -u origin main
 
 # Docker Commands

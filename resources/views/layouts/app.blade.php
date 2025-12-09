@@ -15,10 +15,11 @@
         <a href="/" class="text-xl font-bold">Fansclub E-Sport</a>
 
         <nav class="space-x-6">
-            <a href="/admin/dashboard" class="hover:text-blue-600">Dash Atmint</a>
-            <a href="/" class="hover:text-blue-600">Home</a>
-            <a href="/news" class="hover:text-blue-600">News</a>
-            <a href="/merchandise" class="hover:text-blue-600">Merchandise</a>
+            <a href="/admin/dashboard" class="hover:text-blue-600">Atmint</a>
+            <a href="/" class="hover:text-blue-600">HOME</a>
+            <a href="/news" class="hover:text-blue-600">NEWS</a>
+            <a href="/merchandise" class="hover:text-blue-600">MERCHANDISE</a>
+            <a href="register/member" class="hover:text-blue-600">MEMBERSHIP</a>
 
             <form action="/admin/logout" method="POST" class="inline">
                 @csrf

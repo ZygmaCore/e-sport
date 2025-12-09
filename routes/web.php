@@ -15,7 +15,7 @@ Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 // Member
 Route::prefix('member')->group(function () {
-    Route::get('register', fn () => view('frontend.member.register'));
+    Route::get('/register', fn () => view('frontend.member.register'));
     Route::post('register', fn () => view('frontend.member.register'));
 
     Route::get('profile', fn () => view('frontend.member.profile'));

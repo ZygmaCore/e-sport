@@ -17,7 +17,7 @@
                 @php
                     $imageUrl = $item->image
                     ? asset('images/merch/' . ltrim($item->image, '/'))
-                    : asset('images/default-merch.png');
+                    : asset('images/default.png');
 
 
                      $priceText = $item->price !== null

@@ -21,6 +21,6 @@ class NavLink extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.nav-link');
+        return view('layouts.components.nav-link');
     }
 }

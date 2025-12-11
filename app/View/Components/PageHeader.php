@@ -21,6 +21,6 @@ class PageHeader extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.page-header');
+        return view('layouts.components.page-header');
     }
 }

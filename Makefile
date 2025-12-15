@@ -1,5 +1,8 @@
 # Install
 
+copy:
+	cp .env.example .env
+
 install:
 	@echo "Starting full installation"
 	docker compose up -d
@@ -8,9 +11,6 @@ install:
 
 	@echo "Installing PHP dependencies"
 	docker exec -it laravel_app composer install
-
-	@echo "Setting up environment"
-	docker exec -it laravel_app bash -c "cp -n .env.example .env"
 
 	@echo "Generating app key"
 	docker exec -it laravel_app php artisan key:generate

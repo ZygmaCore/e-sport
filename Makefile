@@ -3,20 +3,33 @@
 install:
 	@echo "Starting full installation"
 	docker compose up -d
-	@echo "Waiting for MySQL to be ready..."
-	sleep 10
-	docker exec -it laravel_app bash -c "cp .env.example .env"
+	@echo "Waiting for containers..."
+	sleep 5
+
+	@echo "Installing PHP dependencies"
+	docker exec -it laravel_app composer install
+
+	@echo "Setting up environment"
+	docker exec -it laravel_app bash -c "cp -n .env.example .env"
+
+	@echo "Generating app key"
 	docker exec -it laravel_app php artisan key:generate
-	docker exec -it laravel_app php artisan migrate
-	@echo "Running Laravel server..."
-	docker exec -it laravel_app php artisan serve --host=0.0.0.0
+
+	@echo "Running migrations"
+	docker exec -it laravel_app php artisan migrate --force
+
+	@echo "Installation complete"
 
 # Git Shortcut (Main Push)
 g:
 	git pull
 	git add .
-	git commit -m "Dashboard Statistik Admin"
+	git commit -m "Create News"
 	git push -u origin main
+
+# CMD Laravel Pake Ini
+app:
+	docker exec -it laravel_app bash
 
 # Docker Commands
 
@@ -28,9 +41,6 @@ down:
 
 restart:
 	docker compose down && docker compose up -d
-
-app:
-	docker exec -it laravel_app bash
 
 mysql:
 	docker exec -it mysql_laravel mysql -u root -p

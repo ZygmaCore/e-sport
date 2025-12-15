@@ -35,7 +35,7 @@
                     Dashboard
                 </x-nav-link>
 
-                <x-nav-link href="/admin/news*" :active="request()->is('admin/news*')" admin>
+                <x-nav-link href="/admin/news" :active="request()->is('admin/news')" admin>
                     News
                 </x-nav-link>
 
@@ -82,7 +82,7 @@
                 Dashboard
             </x-nav-link>
 
-            <x-nav-link href="/admin/news*" :active="request()->is('admin/news*')" admin mobile>
+            <x-nav-link href="/admin/news" :active="request()->is('admin/news')" admin mobile>
                 News
             </x-nav-link>
 

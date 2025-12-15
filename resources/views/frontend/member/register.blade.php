@@ -19,7 +19,7 @@
             </div>
         @endif
 
-        <h1 class="text-3xl font-bold mb-6">Form Pendaftaran Member</h1>
+        <h1 class="text-3xl font-bold mb-6">Member Registration Form</h1>
 
         <form action="{{ url('/member/register') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
             @csrf

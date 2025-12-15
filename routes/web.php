@@ -10,6 +10,8 @@ use App\Http\Controllers\Frontend\MemberController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\LogoutController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\NewsAdminController;
+use App\Http\Controllers\Admin\MerchandiseAdminController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -27,9 +29,9 @@ Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
 Route::prefix('member')->group(function () {
     Route::get('/register', [MemberController::class, 'create']);
     Route::post('/register', [MemberController::class, 'store']);
-    Route::get('profile', fn () => view('frontend.member.profile'));
-    Route::get('qr', fn () => view('frontend.member.qr'));
-    Route::post('update', fn () => view('frontend.member.profile'));
+    Route::get('profile', fn() => view('frontend.member.profile'));
+    Route::get('qr', fn() => view('frontend.member.qr'));
+    Route::post('update', fn() => view('frontend.member.profile'));
 });
 
 // Merchandise
@@ -53,34 +55,35 @@ Route::prefix('admin')->group(function () {
     Route::middleware('admin.auth')->group(function () {
         Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('admin.dashboard');
-    });
 
-    // News
-    Route::prefix('news')->group(function () {
-        Route::get('/', fn () => view('admin.news.index'));
-        Route::get('create', fn () => view('admin.news.create'));
-        Route::post('/', fn () => view('admin.news.index'));
-        Route::get('{id}/edit', fn () => view('admin.news.edit'));
-        Route::put('{id}', fn () => view('admin.news.edit'));
-        Route::delete('{id}', fn () => view('admin.news.index'));
-        Route::post('{id}/toggle', fn () => view('admin.news.index'));
-    });
+        Route::prefix('news')->group(function () {
 
-    // Application
-    Route::prefix('applications')->group(function () {
-        Route::get('/', fn () => view('admin.applications.index'));
-        Route::get('{id}', fn () => view('admin.applications.show'));
-        Route::post('{id}/approve', fn () => view('admin.applications.show'));
-        Route::post('{id}/reject', fn () => view('admin.applications.show'));
-    });
+            Route::get('/', [NewsAdminController::class, 'index'])->name('admin.news.index');
+            Route::get('create', [NewsAdminController::class, 'create'])->name('admin.news.create');
+            Route::post('/', [NewsAdminController::class, 'store'])->name('admin.news.store');
+            Route::get('{id}/edit', [NewsAdminController::class, 'edit'])->name('admin.news.edit');
+            Route::put('{id}', [NewsAdminController::class, 'update'])->name('admin.news.update');
+            Route::delete('{id}', [NewsAdminController::class, 'destroy'])->name('admin.news.destroy');
+            Route::post('{id}/toggle', [NewsAdminController::class, 'toggle'])->name('admin.news.toggle');
+        });
 
-    // Merchandise
-    Route::prefix('merchandise')->group(function () {
-        Route::get('/', fn () => view('admin.merchandise.index'));
-        Route::get('create', fn () => view('admin.merchandise.create'));
-        Route::post('/', fn () => view('admin.merchandise.index'));
-        Route::get('{id}/edit', fn () => view('admin.merchandise.edit'));
-        Route::put('{id}', fn () => view('admin.merchandise.edit'));
-        Route::delete('{id}', fn () => view('admin.merchandise.index'));
+        // Application
+        Route::prefix('applications')->group(function () {
+            Route::get('/', fn() => view('admin.applications.index'));
+            Route::get('{id}', fn() => view('admin.applications.show'));
+            Route::post('{id}/approve', fn() => view('admin.applications.show'));
+            Route::post('{id}/reject', fn() => view('admin.applications.show'));
+        });
+
+        // Merchandise
+        Route::prefix('merchandise')->group(function () {
+            Route::get('/', fn() => view('admin.merchandise.index'));
+            Route::get('create', fn() => view('admin.merchandise.create'));
+            Route::post('/', fn() => view('admin.merchandise.index'));
+            Route::get('{id}/edit', fn() => view('admin.merchandise.edit'));
+            Route::put('{id}', fn() => view('admin.merchandise.edit'));
+            Route::delete('{id}', fn() => view('admin.merchandise.index'));
+        });
     });
 });
+

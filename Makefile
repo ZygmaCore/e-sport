@@ -24,7 +24,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Final News (Edit, etc.)"
+	git commit -m "Add port for tunelling"
 	git push -u origin main
 
 # CMD Laravel Pake Ini
@@ -52,11 +52,11 @@ migrate:
 	docker exec -it laravel_app php artisan migrate
 
 serve:
-	docker exec -it laravel_app php artisan serve --host=0.0.0.0
+	docker exec -it laravel_app php artisan serve --host=0.0.0.0 --port=8000
 
 start:
 	docker compose up -d
-	docker exec -it laravel_app php artisan serve --host=0.0.0.0
+	docker exec -it laravel_app php artisan serve --host=0.0.0.0 --port=8000
 
 refresh:
 	docker exec -it laravel_app php artisan optimize:clear

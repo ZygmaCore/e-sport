@@ -45,12 +45,12 @@
 
             <div>
                 <label class="block font-semibold mb-1">
-                    Ringkasan
+                    Ringkasan <span class="text-red-500">*</span>
                 </label>
                 <textarea name="summary"
                           rows="3"
                           class="w-full border-gray-300 rounded p-2"
-                          placeholder="Ringkasan singkat berita (maks. 300 karakter)">{{ old('summary') }}</textarea>
+                          placeholder="maks. 300 karakter">{{ old('summary') }}</textarea>
             </div>
 
             <div>

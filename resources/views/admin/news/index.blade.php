@@ -56,28 +56,38 @@
                         <td class="px-4 py-3 border">
                             @if($item->status === 'published')
                                 <span class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
-                                    Published
-                                </span>
+                                Published
+                            </span>
                             @else
                                 <span class="px-2 py-1 text-xs bg-gray-200 text-gray-600 rounded">
-                                    Draft
-                                </span>
+                                Draft
+                            </span>
                             @endif
                         </td>
 
                         <td class="px-4 py-3 border">
-                            {{ $item->published_at?->format('d M Y') ?? '-' }}
+                            {{ $item->published_at?->format('d M Y H:i') ?? '-' }}
                         </td>
 
-                        {{-- Actions --}}
-                        <td class="px-4 py-3 border space-x-2">
-                            {{-- Edit --}}
+                        <td class="px-4 py-3 border space-x-2 whitespace-nowrap">
+
+                            <form action="{{ route('admin.news.toggle', $item->id) }}"
+                                  method="POST"
+                                  class="inline">
+                                @csrf
+                                <button type="submit"
+                                        class="text-sm {{ $item->status === 'published'
+                                        ? 'text-yellow-600 hover:underline'
+                                        : 'text-green-600 hover:underline' }}">
+                                    {{ $item->status === 'published' ? 'Unpublish' : 'Publish' }}
+                                </button>
+                            </form>
+
                             <a href="{{ route('admin.news.edit', $item->id) }}"
-                               class="text-blue-600 hover:underline">
+                               class="text-blue-600 hover:underline text-sm">
                                 Edit
                             </a>
 
-                            {{-- Delete --}}
                             <form action="{{ route('admin.news.destroy', $item->id) }}"
                                   method="POST"
                                   class="inline"
@@ -85,10 +95,11 @@
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"
-                                        class="text-red-600 hover:underline">
+                                        class="text-red-600 hover:underline text-sm">
                                     Hapus
                                 </button>
                             </form>
+
                         </td>
                     </tr>
                 @empty

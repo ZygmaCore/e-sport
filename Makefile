@@ -24,7 +24,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Create News"
+	git commit -m "Final News (Edit, etc.)"
 	git push -u origin main
 
 # CMD Laravel Pake Ini

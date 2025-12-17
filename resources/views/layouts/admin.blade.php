@@ -39,11 +39,11 @@
                     News
                 </x-nav-link>
 
-                <x-nav-link href="/admin/applications*" :active="request()->is('admin/applications*')" admin>
+                <x-nav-link href="/admin/applications" :active="request()->is('admin/applications')" admin>
                     Applications
                 </x-nav-link>
 
-                <x-nav-link href="/admin/merchandise*" :active="request()->is('admin/merchandise*')" admin>
+                <x-nav-link href="/admin/merchandise" :active="request()->is('admin/merchandise')" admin>
                     Merchandise
                 </x-nav-link>
 
@@ -86,11 +86,11 @@
                 News
             </x-nav-link>
 
-            <x-nav-link href="/admin/applications*" :active="request()->is('admin/applications*')" admin mobile>
+            <x-nav-link href="/admin/applications" :active="request()->is('admin/applications')" admin mobile>
                 Applications
             </x-nav-link>
 
-            <x-nav-link href="/admin/merchandise*" :active="request()->is('admin/merchandise*')" admin mobile>
+            <x-nav-link href="/admin/merchandise" :active="request()->is('admin/merchandise')" admin mobile>
                 Merchandise
             </x-nav-link>
 

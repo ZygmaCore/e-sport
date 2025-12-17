@@ -24,7 +24,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Add port for tunelling"
+	git commit -m "Merchandise Index & Create"
 	git push -u origin main
 
 # CMD Laravel Pake Ini
@@ -63,3 +63,6 @@ refresh:
 
 tinker:
 	docker exec -it laravel_app php artisan tinker
+
+tunnel:
+	ngrok start web1

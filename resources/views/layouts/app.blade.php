@@ -24,7 +24,7 @@
                 <x-nav-link href="/" :active="request()->is('/')">Home</x-nav-link>
                 <x-nav-link href="/news" :active="request()->is('news')">News</x-nav-link>
                 <x-nav-link href="/merchandise" :active="request()->is('merchandise')">Merchandise</x-nav-link>
-                <x-nav-link href="/member/register" :active="request()->is('member*')">Membership</x-nav-link>
+                <x-nav-link href="/member/register" :active="request()->is('member')">Membership</x-nav-link>
 
                 <form action="/admin/logout" method="POST" class="inline">
                     @csrf
@@ -57,20 +57,15 @@
             x-show="open"
             x-transition
         >
-            @if(Auth::guard('admin')->check())
+{{--            @if(Auth::guard('admin')->check())--}}
                 <a href="{{ route('admin.dashboard') }}" class="block hover:text-blue-600 px-8 py-2">
                     Admin
                 </a>
-
-                <form action="/admin/logout" method="POST" class="px-8 py-1.5">
-                    @csrf
-                    <button class="hover:text-red-400">Logout</button>
-                </form>
-            @endif
+{{--            @endif--}}
             <x-nav-link href="/" :active="request()->is('/')" mobile>Home</x-nav-link>
             <x-nav-link href="/news" :active="request()->is('news')" mobile>News</x-nav-link>
             <x-nav-link href="/merchandise" :active="request()->is('merchandise')" mobile>Merchandise</x-nav-link>
-            <x-nav-link href="/member/register" :active="request()->is('member*')" mobile>Membership</x-nav-link>
+            <x-nav-link href="/member/register" :active="request()->is('member')" mobile>Membership</x-nav-link>
 
             <form action="/admin/logout" method="POST" class="px-8 py-1.5">
                 @csrf

@@ -57,7 +57,6 @@ Route::prefix('admin')->group(function () {
             ->name('admin.dashboard');
 
         Route::prefix('news')->group(function () {
-
             Route::get('/', [NewsAdminController::class, 'index'])->name('admin.news.index');
             Route::get('create', [NewsAdminController::class, 'create'])->name('admin.news.create');
             Route::post('/', [NewsAdminController::class, 'store'])->name('admin.news.store');
@@ -77,13 +76,14 @@ Route::prefix('admin')->group(function () {
 
         // Merchandise
         Route::prefix('merchandise')->group(function () {
-            Route::get('/', fn() => view('admin.merchandise.index'));
-            Route::get('create', fn() => view('admin.merchandise.create'));
-            Route::post('/', fn() => view('admin.merchandise.index'));
-            Route::get('{id}/edit', fn() => view('admin.merchandise.edit'));
-            Route::put('{id}', fn() => view('admin.merchandise.edit'));
-            Route::delete('{id}', fn() => view('admin.merchandise.index'));
+            Route::get('/', [MerchandiseAdminController::class, 'index'])->name('admin.merchandise.index');
+            Route::get('create', [MerchandiseAdminController::class, 'create'])->name('admin.merchandise.create');
+            Route::post('/', [MerchandiseAdminController::class, 'store'])->name('admin.merchandise.store');
+            Route::get('{id}/edit', [MerchandiseAdminController::class, 'edit'])->name('admin.merchandise.edit');
+            Route::put('{id}', [MerchandiseAdminController::class, 'update'])->name('admin.merchandise.update');
+            Route::delete('{id}', [MerchandiseAdminController::class, 'destroy'])->name('admin.merchandise.destroy');
         });
+
     });
 });
 

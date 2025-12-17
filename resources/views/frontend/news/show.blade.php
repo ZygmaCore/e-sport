@@ -30,14 +30,14 @@
         @endphp
 
         <div class="flex items-center gap-4">
-            <a href="https://api.whatsapp.com/send?text={{ $shareTitle }}%20{{ $shareUrl }}"
+            <a href="https://twitter.com/intent/tweet?text={{ $shareTitle }}&url={{ $shareUrl }}"
                target="_blank">
                 <img src="/images/share/logo1.jpg"
                      alt="Share to WhatsApp"
                      class="w-10 h-10 hover:opacity-80 transition border-2 border-gray-300 rounded-full">
             </a>
 
-            <a href="https://twitter.com/intent/tweet?text={{ $shareTitle }}&url={{ $shareUrl }}"
+            <a href="https://api.whatsapp.com/send?text={{ $shareTitle }}%20{{ $shareUrl }}"
                target="_blank">
                 <img src="/images/share/logo2.png"
                      alt="Share to X"

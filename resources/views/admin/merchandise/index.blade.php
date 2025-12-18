@@ -40,9 +40,13 @@
                     <tr class="text-sm text-gray-700">
 
                         <td class="px-4 py-3 border">
-                            <img src="{{ $item->image_url }}"
-                                 alt="{{ $item->name }}"
-                                 class="w-20 h-14 object-cover rounded">
+                            @if($item->image)
+                                <img src="{{ $item->image_url }}"
+                                     alt="{{ $item->name }}"
+                                     class="w-20 h-14 object-cover rounded">
+                            @else
+                                <span class="text-gray-400 italic">Tidak ada</span>
+                            @endif
                         </td>
 
                         <td class="px-4 py-3 border">
@@ -61,14 +65,16 @@
                         </td>
 
                         <td class="px-4 py-3 border">
-                            {{ $item->links->count() }} link
+                            <span class="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
+                                {{ $item->links->count() }} link
+                            </span>
                         </td>
 
                         <td class="px-4 py-3 border">
                             {{ $item->creator->name ?? '-' }}
                         </td>
 
-                        <td class="px-4 py-3 border space-x-2 whitespace-nowrap">
+                        <td class="px-4 py-3 border space-x-3 whitespace-nowrap">
 
                             <a href="{{ route('admin.merchandise.edit', $item->id) }}"
                                class="text-blue-600 hover:underline text-sm">
@@ -78,7 +84,7 @@
                             <form action="{{ route('admin.merchandise.destroy', $item->id) }}"
                                   method="POST"
                                   class="inline"
-                                  onsubmit="return confirm('Yakin hapus merchandise ini?')">
+                                  onsubmit="return confirm('Yakin hapus merchandise ini? Data, gambar, dan link akan ikut terhapus.')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"

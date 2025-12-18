@@ -14,7 +14,10 @@ class MerchandiseAdminController extends Controller
 {
     public function index()
     {
-        $merchandise = Merchandise::latest()->paginate(10);
+        $merchandise = Merchandise::with(['links', 'creator'])
+            ->latest()
+            ->paginate(10);
+
         return view('admin.merchandise.index', compact('merchandise'));
     }
 
@@ -37,27 +40,32 @@ class MerchandiseAdminController extends Controller
         $imageName = null;
 
         if ($request->hasFile('image')) {
-            $image      = $request->file('image');
-            $imageName  = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+            $image     = $request->file('image');
+            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
             $image->move(public_path('images/merch'), $imageName);
+        }
+
+        $slug = Str::slug($request->name);
+        if (Merchandise::where('slug', $slug)->exists()) {
+            $slug .= '-' . time();
         }
 
         $merchandise = Merchandise::create([
             'name'        => $request->name,
-            'slug'        => Str::slug($request->name),
+            'slug'        => $slug,
             'description' => $request->description,
             'price'       => $request->price,
             'image'       => $imageName,
-            'created_by'   => Auth::guard('admin')->id(),
+            'created_by'  => Auth::guard('admin')->id(),
         ]);
 
-        if ($request->shop_name && $request->url) {
-            foreach ($request->shop_name as $index => $shop) {
-                if (!empty($shop) && !empty($request->url[$index])) {
+        if ($request->filled('shop_name') && $request->filled('url')) {
+            foreach ($request->shop_name as $i => $shop) {
+                if (!empty($shop) && !empty($request->url[$i])) {
                     MerchandiseLink::create([
                         'merchandise_id' => $merchandise->id,
                         'shop_name'      => $shop,
-                        'url'            => $request->url[$index],
+                        'url'            => $request->url[$i],
                     ]);
                 }
             }
@@ -68,7 +76,6 @@ class MerchandiseAdminController extends Controller
             ->with('success', 'Merchandise berhasil ditambahkan.');
     }
 
-// Edit dan Delete
     public function edit($id)
     {
         $merchandise = Merchandise::with('links')->findOrFail($id);
@@ -77,9 +84,68 @@ class MerchandiseAdminController extends Controller
 
     public function update(Request $request, $id)
     {
+        $merchandise = Merchandise::with('links')->findOrFail($id);
+
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'description' => 'required|string',
+            'price'       => 'nullable|numeric',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'shop_name.*' => 'nullable|string|max:100',
+            'url.*'       => 'nullable|url',
+        ]);
+
+        if ($request->hasFile('image')) {
+            if ($merchandise->image && File::exists(public_path('images/merch/' . $merchandise->image))) {
+                File::delete(public_path('images/merch/' . $merchandise->image));
+            }
+
+            $image     = $request->file('image');
+            $imageName = time() . '_' . Str::slug($request->name) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images/merch'), $imageName);
+
+            $merchandise->image = $imageName;
+        }
+
+        $merchandise->update([
+            'name'        => $request->name,
+            'description' => $request->description,
+            'price'       => $request->price,
+        ]);
+
+        MerchandiseLink::where('merchandise_id', $merchandise->id)->delete();
+
+        if ($request->filled('shop_name') && $request->filled('url')) {
+            foreach ($request->shop_name as $i => $shop) {
+                if (!empty($shop) && !empty($request->url[$i])) {
+                    MerchandiseLink::create([
+                        'merchandise_id' => $merchandise->id,
+                        'shop_name'      => $shop,
+                        'url'            => $request->url[$i],
+                    ]);
+                }
+            }
+        }
+
+        return redirect()
+            ->route('admin.merchandise.index')
+            ->with('success', 'Merchandise berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
+        $merchandise = Merchandise::with('links')->findOrFail($id);
+
+        if ($merchandise->image && File::exists(public_path('images/merch/' . $merchandise->image))) {
+            File::delete(public_path('images/merch/' . $merchandise->image));
+        }
+
+        MerchandiseLink::where('merchandise_id', $merchandise->id)->delete();
+
+        $merchandise->delete();
+
+        return redirect()
+            ->route('admin.merchandise.index')
+            ->with('success', 'Merchandise berhasil dihapus.');
     }
 }

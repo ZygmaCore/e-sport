@@ -1,3 +1,8 @@
 /merch/*
+!/merch/.gitignore
+
 /news/*
+!/news/.gitignore
+
 /proof/*
+!/proof/.gitignore

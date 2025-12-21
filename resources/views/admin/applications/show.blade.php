@@ -10,7 +10,7 @@
                 Detail Pendaftaran Member
             </h1>
             <p class="text-sm text-gray-500">
-                ID Pendaftaran: {{ $application->membership_id }}
+                ID Pendaftaran: {{ $application->membership_id ?? '-' }}
             </p>
         </div>
 
@@ -46,7 +46,7 @@
 
                     <div>
                         <span class="text-gray-500">Nomor HP</span>
-                        <p class="font-medium text-gray-800">{{ $application->phone }}</p>
+                        <p class="font-medium text-gray-800">{{ $application->phone ?? '-' }}</p>
                     </div>
 
                     <div>
@@ -66,11 +66,11 @@
                     Status Pendaftaran
                 </h2>
 
-                @if ($application->status === 'pending')
+                @if ($application->isPending())
                     <span class="inline-block px-3 py-1 text-xs rounded bg-yellow-100 text-yellow-700">
                     Pending
                 </span>
-                @elseif ($application->status === 'approved')
+                @elseif ($application->isApproved())
                     <span class="inline-block px-3 py-1 text-xs rounded bg-green-100 text-green-700">
                     Approved
                 </span>
@@ -79,7 +79,31 @@
                     Rejected
                 </span>
                 @endif
+
+                @if ($application->approved_at)
+                    <p class="text-xs text-gray-500 mt-1">
+                        Disetujui pada {{ $application->approved_at->format('d M Y, H:i') }}
+                    </p>
+                @endif
             </div>
+
+            @if ($application->isApproved() && $application->qr_code_url)
+                <div>
+                    <h2 class="text-lg font-semibold text-gray-700 mb-4">
+                        QR Code Member
+                    </h2>
+
+                    <img
+                        src="{{ $application->qr_code_url }}"
+                        alt="QR Code Member"
+                        class="w-48 h-48 border rounded"
+                    >
+
+                    <p class="text-xs text-gray-500 mt-2">
+                        ID Member: <span class="font-mono">{{ $application->membership_id }}</span>
+                    </p>
+                </div>
+            @endif
 
             <div>
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">
@@ -99,7 +123,7 @@
                 @endif
             </div>
 
-            @if ($application->status === 'pending')
+            @if ($application->isPending())
                 <div class="border-t pt-6 flex flex-col md:flex-row gap-4">
 
                     <form method="POST"

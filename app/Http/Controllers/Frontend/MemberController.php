@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MemberProfile;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use App\Mail\MemberPendingMail;
 
 class MemberController extends Controller
@@ -32,24 +34,78 @@ class MemberController extends Controller
         $filename = time() . '_' . $file->getClientOriginalName();
         $file->move(public_path('images/proof'), $filename);
 
-        $member = MemberProfile::create([
-            'full_name'       => $request->full_name,
-            'email'           => $request->email,
-            'phone'           => $request->phone,
-            'birth_date'      => $request->birth_date,
-            'address'         => $request->address,
-            'city'            => $request->city,
-            'photo'           => null,
-            'membership_id'   => $request->username,
-            'payment_proof'   => $filename,
-            'status'          => 'pending',
+        $profile = MemberProfile::create([
+            'full_name'     => $request->full_name,
+            'email'         => $request->email,
+            'phone'         => $request->phone,
+            'birth_date'    => $request->birth_date,
+            'address'       => $request->address,
+            'city'          => $request->city,
+            'photo'         => null,
+            'membership_id' => $request->username,
+            'payment_proof' => $filename,
+            'status'        => 'pending',
         ]);
 
-        Mail::to($member->email)->send(new MemberPendingMail($member));
+        Mail::to($profile->email)->send(new MemberPendingMail($profile));
 
         return back()->with(
             'success',
             'Pendaftaran berhasil dikirim. Menunggu verifikasi admin.'
         );
+    }
+
+    public function profile()
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->member_id) {
+            abort(404, 'Member profile not found');
+        }
+
+        $profile = MemberProfile::findOrFail($user->member_id);
+
+        return view('frontend.member.profile', compact('profile'));
+    }
+
+    public function qr()
+    {
+        $profile = MemberProfile::where('email', Auth::user()->email)->firstOrFail();
+
+        if ($profile->status !== 'approved') {
+            abort(403, 'QR Code hanya tersedia untuk member yang sudah disetujui.');
+        }
+
+        return view('frontend.member.qr', compact('profile'));
+    }
+
+    public function update(Request $request)
+    {
+        $profile = MemberProfile::where('email', Auth::user()->email)->firstOrFail();
+
+        $data = $request->validate([
+            'full_name' => 'required|string|max:150',
+            'phone'     => 'nullable|string|max:20',
+            'address'   => 'nullable|string',
+            'city'      => 'nullable|string|max:20',
+            'photo'     => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            if ($profile->photo && File::exists(public_path($profile->photo))) {
+                File::delete(public_path($profile->photo));
+            }
+
+            $filename = time() . '_' . $request->photo->getClientOriginalName();
+            $request->photo->move(public_path('images/member'), $filename);
+
+            $data['photo'] = 'images/member/' . $filename;
+        }
+
+        $profile->update($data);
+
+        return redirect()
+            ->route('member.profile')
+            ->with('success', 'Profil berhasil diperbarui.');
     }
 }

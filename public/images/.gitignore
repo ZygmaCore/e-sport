@@ -6,3 +6,6 @@
 
 /proof/*
 !/proof/.gitignore
+
+/qr/*
+!/qr/.gitignore

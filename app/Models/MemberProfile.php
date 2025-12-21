@@ -20,6 +20,7 @@ class MemberProfile extends Model
         'city',
         'photo',
         'membership_id',
+        'qr_code_path',
         'payment_proof',
         'status',
         'approved_at',
@@ -27,7 +28,7 @@ class MemberProfile extends Model
     ];
 
     protected $casts = [
-        'birth_date' => 'date',
+        'birth_date'  => 'date',
         'approved_at' => 'datetime',
     ];
 
@@ -48,5 +49,27 @@ class MemberProfile extends Model
         return $this->payment_proof
             ? asset('images/proof/' . $this->payment_proof)
             : null;
+    }
+
+    public function getQrCodeUrlAttribute()
+    {
+        return $this->qr_code_path
+            ? asset('images/qr/' . $this->qr_code_path)
+            : null;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->status === 'approved';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
+    }
+
+    public function isRejected(): bool
+    {
+        return $this->status === 'rejected';
     }
 }

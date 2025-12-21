@@ -20,7 +20,8 @@ return new class extends Migration
             $table->text('address')->nullable();
             $table->string('city', 20)->nullable();
             $table->text('photo')->nullable();
-            $table->string('membership_id', 50);
+            $table->string('membership_id', 50)->unique();
+            $table->string('qr_code_path', 255)->nullable();
             $table->string('payment_proof', 255);
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->timestamp('approved_at')->nullable();

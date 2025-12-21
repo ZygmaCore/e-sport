@@ -28,11 +28,12 @@ Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 // Member
 Route::prefix('member')->group(function () {
-    Route::get('/register', [MemberController::class, 'create']);
-    Route::post('/register', [MemberController::class, 'store']);
-    Route::get('profile', fn() => view('frontend.member.profile'));
-    Route::get('qr', fn() => view('frontend.member.qr'));
-    Route::post('update', fn() => view('frontend.member.profile'));
+        Route::get('register', [MemberController::class, 'create']);
+        Route::post('register', [MemberController::class, 'store']);
+
+        Route::get('profile', [MemberController::class, 'profile'])->name('member.profile');
+        Route::get('qr', [MemberController::class, 'qr'])->name('member.qr');
+        Route::post('update', [MemberController::class, 'update'])->name('member.update');
 });
 
 // Merchandise

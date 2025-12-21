@@ -9,6 +9,11 @@ use App\Mail\MemberRejectedMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 
 class ApplicationsController extends Controller
 {
@@ -38,18 +43,69 @@ class ApplicationsController extends Controller
                 ->with('error', 'Pendaftaran sudah diproses sebelumnya.');
         }
 
-        $application->update([
-            'status'          => 'approved',
-            'approved_at'     => Carbon::now(),
-            'rejected_reason' => null,
-        ]);
+        DB::beginTransaction();
 
-        Mail::to($application->email)
-            ->send(new MemberApprovedMail($application));
+        try {
+            $year = now()->year;
+            $membershipId = null;
+            $qrFullPath = null;
 
-        return redirect()
-            ->route('admin.applications.index')
-            ->with('success', 'Pendaftaran berhasil diapprove dan email telah dikirim.');
+            $lock = Cache::lock("generate-membership-{$year}", 10);
+
+            $lock->block(10, function () use ($year, &$membershipId, &$qrFullPath) {
+                $lastNumber = MemberProfile::where('membership_id', 'like', "FANS-{$year}-%")
+                    ->max(DB::raw('CAST(SUBSTR(membership_id, -4) AS UNSIGNED)'));
+
+                $lastNumber = $lastNumber ?: 0;
+
+                $newNumber = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+                $membershipId = "FANS-{$year}-{$newNumber}";
+
+                $qrDir = public_path('images/qr');
+
+                $qrFileName = "{$membershipId}.png";
+                $qrFullPath = $qrDir . '/' . $qrFileName;
+
+                $qrCode = new QrCode(
+                    data: $membershipId,
+                    size: 300,
+                    margin: 10
+                );
+
+                $writer = new PngWriter();
+                $result = $writer->write($qrCode);
+
+                $result->saveToFile($qrFullPath);
+            });
+
+            $application->update([
+                'membership_id' => $membershipId,
+                'qr_code_path' => 'images/qr/' . "{$membershipId}.png",
+                'status' => 'approved',
+                'approved_at' => Carbon::now(),
+                'rejected_reason' => null,
+            ]);
+
+            Mail::to($application->email)
+                ->send(new MemberApprovedMail($application));
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.applications.index')
+                ->with('success', 'Pendaftaran berhasil diapprove. ID Member & QR Code berhasil dibuat.');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            if ($qrFullPath && File::exists($qrFullPath)) {
+                File::delete($qrFullPath);
+            }
+
+            return redirect()
+                ->back()
+                ->with('error', 'Terjadi kesalahan saat approve: ' . $e->getMessage());
+        }
     }
 
     public function reject(Request $request, $id)
@@ -67,9 +123,9 @@ class ApplicationsController extends Controller
         }
 
         $application->update([
-            'status'          => 'rejected',
+            'status' => 'rejected',
             'rejected_reason' => $request->rejected_reason,
-            'approved_at'     => null,
+            'approved_at' => null,
         ]);
 
         Mail::to($application->email)

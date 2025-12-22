@@ -24,7 +24,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Email Automation"
+	git commit -m "Create Member Record"
 	git push -u origin main
 
 # CMD Laravel Pake Ini

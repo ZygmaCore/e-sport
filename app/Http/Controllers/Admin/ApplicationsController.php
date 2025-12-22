@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ApplicationsController extends Controller
 {
@@ -73,27 +76,36 @@ class ApplicationsController extends Controller
                 );
 
                 $writer = new PngWriter();
-                $result = $writer->write($qrCode);
-
-                $result->saveToFile($qrFullPath);
+                $writer->write($qrCode)->saveToFile($qrFullPath);
             });
 
             $application->update([
-                'membership_id' => $membershipId,
-                'qr_code_path' => 'images/qr/' . "{$membershipId}.png",
-                'status' => 'approved',
-                'approved_at' => Carbon::now(),
+                'membership_id'   => $membershipId,
+                'qr_code_path'    => "{$membershipId}.png",
+                'status'          => 'approved',
+                'approved_at'     => now(),
                 'rejected_reason' => null,
             ]);
 
+            $generatedPassword = Str::random(10);
+
+            $user = User::create([
+                'member_id' => $application->id,
+                'name'      => $application->full_name,
+                'email'     => $application->email,
+                'password'  => Hash::make($generatedPassword),
+                'role'      => 'member',
+                'status'    => 'active',
+            ]);
+
             Mail::to($application->email)
-                ->send(new MemberApprovedMail($application));
+                ->send(new MemberApprovedMail($application, $generatedPassword));
 
             DB::commit();
 
             return redirect()
                 ->route('admin.applications.index')
-                ->with('success', 'Pendaftaran berhasil diapprove. ID Member & QR Code berhasil dibuat.');
+                ->with('success', 'Pendaftaran berhasil diapprove. Akun member berhasil dibuat.');
 
         } catch (\Throwable $e) {
             DB::rollBack();

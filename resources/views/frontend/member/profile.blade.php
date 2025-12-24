@@ -7,12 +7,8 @@
 
         <div class="mb-6">
             <h1 class="text-2xl font-semibold text-gray-800">
-                Profil Member
+                Profil Saya
             </h1>
-            <p class="text-sm text-gray-500">
-                Informasi keanggotaan
-            </p>
-        </div>
 
         <div class="bg-white rounded-lg shadow p-6">
             <div class="grid md:grid-cols-3 gap-6">

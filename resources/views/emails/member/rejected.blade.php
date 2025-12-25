@@ -6,7 +6,7 @@
             </h2>
 
             <p style="margin:0 0 14px;font-size:14px;color:#374151;">
-                Terima kasih telah melakukan pendaftaran sebagai member Fansclub Esports.
+                Terima kasih telah melakukan pendaftaran sebagai member <strong>Fansclub Esports</strong>.
             </p>
 
             <p style="margin:0 0 14px;font-size:14px;color:#374151;">
@@ -23,14 +23,20 @@
                 </div>
             </div>
 
-            <p style="margin:0 0 14px;font-size:14px;color:#374151;">
-                Penolakan ini dapat disebabkan oleh data yang belum lengkap atau bukti pembayaran
-                yang belum sesuai dengan ketentuan.
-            </p>
+            @if ($member->rejected_reason)
+                <div style="margin:18px 0;padding:14px 16px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;">
+                    <div style="font-size:12px;color:#9a3412;letter-spacing:.02em;margin-bottom:4px;">
+                        Alasan Penolakan
+                    </div>
+                    <div style="font-size:14px;color:#7c2d12;">
+                        {{ $member->rejected_reason }}
+                    </div>
+                </div>
+            @endif
 
             <p style="margin:0 0 14px;font-size:14px;color:#374151;">
-                Kamu dapat melakukan pendaftaran ulang atau menghubungi admin Fansclub
-                untuk informasi lebih lanjut.
+                Kamu dapat melakukan pendaftaran ulang setelah memastikan data yang dikirim
+                sudah sesuai dengan ketentuan yang berlaku.
             </p>
 
             <p style="margin:0;font-size:14px;color:#374151;">

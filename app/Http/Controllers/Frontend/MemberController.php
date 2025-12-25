@@ -16,10 +16,9 @@ class MemberController extends Controller
     {
         return view('frontend.member.register');
     }
-
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'full_name'     => 'required|string|max:150',
             'email'         => 'required|email|max:150|unique:member_profiles,email',
             'phone'         => 'required|string|max:20',
@@ -27,31 +26,43 @@ class MemberController extends Controller
             'address'       => 'nullable|string',
             'city'          => 'nullable|string|max:50',
             'username'      => 'required|string|max:50|unique:member_profiles,membership_id',
-            'payment_proof' => 'required|mimes:jpg,jpeg,png,pdf|max:2048',
+            'payment_proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+        ], [
+            'email.unique' => 'Email ini sudah pernah digunakan untuk pendaftaran dan tidak dapat digunakan kembali.',
+            'username.unique' => 'Username ini sudah digunakan. Silakan pilih username lain.',
+            'payment_proof.mimes' => 'Bukti pembayaran harus berupa JPG, PNG, atau PDF.',
         ]);
 
-        $file = $request->file('payment_proof');
-        $proofName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('images/proof'), $proofName);
+        DB::transaction(function () use ($validated) {
 
-        $profile = MemberProfile::create([
-            'full_name'     => $request->full_name,
-            'email'         => $request->email,
-            'phone'         => $request->phone,
-            'birth_date'    => $request->birth_date,
-            'address'       => $request->address,
-            'city'          => $request->city,
-            'photo'         => null,
-            'membership_id' => $request->username,
-            'payment_proof' => $proofName,
-            'status'        => 'pending',
-        ]);
+            $destination = public_path('images/proof');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
 
-        Mail::to($profile->email)->send(new MemberPendingMail($profile));
+            $file = $validated['payment_proof'];
+            $proofName = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move($destination, $proofName);
+
+            $profile = MemberProfile::create([
+                'full_name'     => $validated['full_name'],
+                'email'         => $validated['email'],
+                'phone'         => $validated['phone'],
+                'birth_date'    => $validated['birth_date'],
+                'address'       => $validated['address'],
+                'city'          => $validated['city'],
+                'photo'         => null,
+                'membership_id' => $validated['username'],
+                'payment_proof' => $proofName,
+                'status'        => 'pending',
+            ]);
+
+            Mail::to($profile->email)->send(new MemberPendingMail($profile));
+        });
 
         return back()->with(
             'success',
-            'Pendaftaran berhasil dikirim. Menunggu verifikasi admin.'
+            'Pendaftaran berhasil dikirim. Data kamu sedang ditinjau oleh admin.'
         );
     }
 
@@ -144,7 +155,6 @@ class MemberController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            // hapus foto lama
             if ($profile->photo && File::exists(public_path('images/profile/' . $profile->photo))) {
                 File::delete(public_path('images/profile/' . $profile->photo));
             }

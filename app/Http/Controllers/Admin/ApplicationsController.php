@@ -140,17 +140,33 @@ class ApplicationsController extends Controller
             return back()->with('error', 'Pendaftaran sudah diproses sebelumnya.');
         }
 
-        $application->update([
-            'status' => 'rejected',
-            'rejected_reason' => $request->rejected_reason,
-            'approved_at' => null,
-        ]);
+        DB::beginTransaction();
 
-        Mail::to($application->email)
-            ->send(new MemberRejectedMail($application));
+        try {
+            $application->update([
+                'status'          => 'rejected',
+                'rejected_reason' => $request->rejected_reason,
+                'approved_at'     => null,
+            ]);
 
-        return redirect()
-            ->route('admin.applications.index')
-            ->with('success', 'Pendaftaran berhasil direject dan email telah dikirim.');
+            Mail::to($application->email)
+                ->send(new MemberRejectedMail($application));
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.applications.index')
+                ->with('success', 'Pendaftaran berhasil direject dan email telah dikirim.');
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            report($e);
+
+            return back()->with(
+                'error',
+                'Terjadi kesalahan saat memproses penolakan. Silakan coba lagi.'
+            );
+        }
     }
 }

@@ -10,10 +10,6 @@
                 Login Member
             </h1>
 
-            <p class="text-sm text-gray-500 text-center mb-6">
-                Masuk untuk mengakses profil member
-            </p>
-
             @if ($errors->any())
                 <div class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
                     {{ $errors->first() }}

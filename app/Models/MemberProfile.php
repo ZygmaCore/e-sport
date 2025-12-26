@@ -72,4 +72,9 @@ class MemberProfile extends Model
     {
         return $this->status === 'rejected';
     }
+
+    public function histories()
+    {
+        return $this->hasMany(MembershipHistory::class, 'member_profile_id');
+    }
 }

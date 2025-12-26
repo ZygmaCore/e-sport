@@ -54,7 +54,8 @@ class ApplicationsController extends Controller
             Cache::lock("generate-membership-{$year}", 10)->block(10, function () use (
                 $year,
                 &$membershipId,
-                &$qrFullPath
+                &$qrFullPath,
+                $application
             ) {
                 $lastNumber = MemberProfile::where('membership_id', 'like', "FANS-{$year}-%")
                     ->max(DB::raw('CAST(SUBSTR(membership_id, -4) AS UNSIGNED)')) ?? 0;
@@ -67,11 +68,13 @@ class ApplicationsController extends Controller
                     File::makeDirectory($qrDir, 0755, true);
                 }
 
+                $profileUrl = route('member.profile');
+
                 $qrFileName = "{$membershipId}.png";
                 $qrFullPath = $qrDir . '/' . $qrFileName;
 
                 $qrCode = new QrCode(
-                    data: $membershipId,
+                    data: $profileUrl,
                     size: 300,
                     margin: 10
                 );
@@ -83,7 +86,7 @@ class ApplicationsController extends Controller
 
             $application->update([
                 'membership_id'   => $membershipId,
-                'qr_code_path'    => "{$membershipId}.png",
+                'qr_code_path' => "{$membershipId}.png",
                 'status'          => 'approved',
                 'approved_at'     => now(),
                 'rejected_reason' => null,
@@ -93,7 +96,7 @@ class ApplicationsController extends Controller
                 'member_id' => $application->id,
                 'name'      => $application->full_name,
                 'email'     => $application->email,
-                'password'  => Hash::make(Str::random(32)), // dummy hash
+                'password'  => Hash::make(Str::random(32)),
                 'role'      => 'member',
                 'status'    => 'active',
             ]);

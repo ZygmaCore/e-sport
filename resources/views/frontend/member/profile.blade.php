@@ -7,9 +7,7 @@
         <div class="max-w-4xl mx-auto">
 
             <div class="mb-8">
-                <h1 class="text-2xl font-semibold text-gray-900">
-                    Profil Saya
-                </h1>
+                <h1 class="text-2xl font-semibold text-gray-900">Profil Saya</h1>
                 <p class="text-sm text-gray-500 mt-1">
                     Informasi akun dan keanggotaan member
                 </p>
@@ -31,36 +29,30 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
                     <div class="text-center">
-
                         <img
                             src="{{ $profile->photo_url ?? asset('images/default-avatar.png') }}"
-                            alt="Foto Profil"
                             class="w-32 h-32 mx-auto rounded-full object-cover border"
+                            alt="Foto Profil"
                         >
 
-                        <form action="{{ route('member.update.photo') }}" method="POST" enctype="multipart/form-data"
-                              class="mt-4">
-
+                        <form action="{{ route('member.update.photo') }}" method="POST" enctype="multipart/form-data" class="mt-4">
                             @csrf
-
                             <input
                                 type="file"
                                 name="photo"
                                 accept="image/*"
                                 class="block w-full text-sm text-gray-600
-                                   file:mr-3 file:py-2 file:px-4
-                                   file:rounded-lg file:border-0
-                                   file:text-sm file:font-semibold
-                                   file:bg-gray-100 file:text-gray-700
-                                   hover:file:bg-gray-200"
+                                file:mr-3 file:py-2 file:px-4
+                                file:rounded-lg file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-gray-100 file:text-gray-700
+                                hover:file:bg-gray-200"
                                 required
                             >
-
                             <button
                                 type="submit"
                                 class="mt-3 w-full bg-blue-600 text-white py-2 rounded-lg
-                                   text-sm font-semibold hover:bg-blue-700"
-                            >
+                                text-sm font-semibold hover:bg-blue-700">
                                 Update Foto Profil
                             </button>
                         </form>
@@ -85,46 +77,36 @@
 
                     <div class="md:col-span-2">
                         <table class="w-full text-sm text-gray-700">
-
                             <tr class="border-b">
                                 <td class="py-3 w-40 text-gray-500">Nama Lengkap</td>
-                                <td class="font-medium text-gray-900">
-                                    {{ $profile->full_name }}
-                                </td>
+                                <td class="font-medium text-gray-900">{{ $profile->full_name }}</td>
                             </tr>
-
                             <tr class="border-b">
                                 <td class="py-3 text-gray-500">Email</td>
                                 <td>{{ $profile->email }}</td>
                             </tr>
-
                             <tr class="border-b">
                                 <td class="py-3 text-gray-500">Nomor HP</td>
                                 <td>{{ $profile->phone }}</td>
                             </tr>
-
                             <tr class="border-b">
                                 <td class="py-3 text-gray-500">Tanggal Lahir</td>
-                                <td>{{ $profile->birth_date ?? '-' }}</td>
-                            </tr>
-
-                            <tr class="border-b">
-                                <td class="py-3 text-gray-500">ID Member</td>
-                                <td class="font-mono text-gray-900">
-                                    {{ $profile->membership_id ?? '-' }}
+                                <td>
+                                    {{ $profile->birth_date?->format('d M Y') ?? '-' }}
                                 </td>
                             </tr>
-
+                            <tr class="border-b">
+                                <td class="py-3 text-gray-500">ID Member</td>
+                                <td class="font-mono text-gray-900">{{ $profile->membership_id }}</td>
+                            </tr>
                             <tr class="border-b">
                                 <td class="py-3 text-gray-500">Alamat</td>
                                 <td>{{ $profile->address ?? '-' }}</td>
                             </tr>
-
                             <tr>
                                 <td class="py-3 text-gray-500">Kota</td>
                                 <td>{{ $profile->city ?? '-' }}</td>
                             </tr>
-
                         </table>
                     </div>
 
@@ -133,28 +115,73 @@
 
             @if ($profile->isApproved() && $profile->qr_code_url)
                 <div class="mt-8 bg-white border border-gray-200 rounded-xl p-6">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">
-                        QR Code Member
-                    </h2>
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4">QR Code Member</h2>
 
                     <div class="flex flex-col sm:flex-row items-center gap-6">
                         <img
                             src="{{ $profile->qr_code_url }}"
-                            alt="QR Code Member"
                             class="w-36 h-36 border rounded"
+                            alt="QR Code"
                         >
                         <div class="text-sm text-gray-600">
                             <div>
                                 <strong>ID Member:</strong>
                                 <span class="font-mono">{{ $profile->membership_id }}</span>
                             </div>
-                            <p class="mt-2 text-xs text-gray-500">
-                                QR Code ini digunakan untuk verifikasi keanggotaan dan event resmi.
-                            </p>
+                            <div class="mt-1 break-all text-xs text-gray-500">
+                                <strong>URL:</strong>
+                                {{ url('/member/profile/' . $profile->membership_id) }}
+                            </div>
                         </div>
                     </div>
                 </div>
             @endif
+
+            <div class="mt-8 bg-white border border-gray-200 rounded-xl p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">
+                    Riwayat Keanggotaan
+                </h2>
+
+                @if($histories->isEmpty())
+                    <p class="text-sm text-gray-500">
+                        Belum ada riwayat keanggotaan.
+                    </p>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-gray-700">
+                            <thead>
+                            <tr class="border-b bg-gray-50 text-xs uppercase text-gray-500">
+                                <th class="py-3 px-2 text-left">Tanggal</th>
+                                <th class="py-3 px-2 text-left">Jenis</th>
+                                <th class="py-3 px-2 text-left">Status</th>
+                                <th class="py-3 px-2 text-left">Keterangan</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($histories as $history)
+                                <tr class="border-b last:border-none">
+                                    <td class="py-3 px-2">
+                                        {{ \Carbon\Carbon::parse($history->created_at)->format('d M Y') }}
+                                    </td>
+                                    <td class="py-3 px-2 capitalize">{{ $history->type }}</td>
+                                    <td class="py-3 px-2">
+                                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                                        {{ $history->status === 'paid'
+                                            ? 'bg-green-100 text-green-700'
+                                            : 'bg-yellow-100 text-yellow-700' }}">
+                                        {{ ucfirst($history->status) }}
+                                    </span>
+                                    </td>
+                                    <td class="py-3 px-2 text-gray-600">
+                                        {{ $history->description ?? '-' }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
 
         </div>
     </div>

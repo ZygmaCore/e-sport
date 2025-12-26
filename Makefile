@@ -24,7 +24,7 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "add rejected reason on email"
+	git commit -m "URL Barcode + Payment History"
 	git push -u origin main
 
 # CMD Laravel Pake Ini

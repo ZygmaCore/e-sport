@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use App\Mail\MemberPendingMail;
+use Illuminate\Support\Facades\DB;
+use App\Models\MembershipHistory;
 
 class MemberController extends Controller
 {
@@ -56,6 +58,12 @@ class MemberController extends Controller
                 'payment_proof' => $proofName,
                 'status'        => 'pending',
             ]);
+            MembershipHistory::create([
+                'member_profile_id' => $profile->id,
+                'type'        => 'registration',
+                'description' => 'Pendaftaran member',
+                'status'      => 'paid',
+            ]);
 
             Mail::to($profile->email)->send(new MemberPendingMail($profile));
         });
@@ -80,24 +88,11 @@ class MemberController extends Controller
             abort(403, 'Profil hanya dapat diakses setelah pendaftaran disetujui.');
         }
 
-        return view('frontend.member.profile', compact('profile'));
-    }
+        $histories = $profile->histories()
+            ->latest('created_at')
+            ->get();
 
-    public function qr()
-    {
-        $user = Auth::guard('member')->user();
-
-        if (!$user || !$user->memberProfile) {
-            abort(403);
-        }
-
-        $profile = $user->memberProfile;
-
-        if (!$profile->isApproved()) {
-            abort(403, 'QR Code hanya tersedia untuk member yang sudah disetujui.');
-        }
-
-        return view('frontend.member.qr', compact('profile'));
+        return view('frontend.member.profile', compact('profile', 'histories'));
     }
 
     public function update(Request $request)

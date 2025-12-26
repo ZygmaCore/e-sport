@@ -10,10 +10,6 @@
                 Set Password
             </h1>
 
-            <p class="text-sm text-gray-500 text-center mb-6">
-                Buat password untuk mengaktifkan akun member
-            </p>
-
             @if ($errors->any())
                 <div class="mb-4 p-3 bg-red-100 text-red-700 rounded text-sm">
                     {{ $errors->first() }}

@@ -25,6 +25,12 @@
             @csrf
 
             <div>
+                <label class="block font-semibold mb-1">Username <span class="text-red-600">*</span></label>
+                <input type="text" name="username" value="{{ old('username') }}"
+                       class="w-full border-gray-300 rounded p-2" required>
+            </div>
+
+            <div>
                 <label class="block font-semibold mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
                 <input type="text" name="full_name" value="{{ old('full_name') }}"
                        class="w-full border-gray-300 rounded p-2" required>
@@ -58,12 +64,6 @@
                 <label class="block font-semibold mb-1">Alamat</label>
                 <textarea name="address" rows="3"
                           class="w-full border-gray-300 rounded p-2">{{ old('address') }}</textarea>
-            </div>
-
-            <div>
-                <label class="block font-semibold mb-1">Username <span class="text-red-600">*</span></label>
-                <input type="text" name="username" value="{{ old('username') }}"
-                       class="w-full border-gray-300 rounded p-2" required>
             </div>
 
             <div>

@@ -22,7 +22,7 @@ class MemberApprovedMail extends Mailable
     public function build()
     {
         return $this
-            ->subject('Pendaftaran Member Disetujui – Set Password Akun Anda')
+            ->subject('Pendaftaran Member Disetujui, Set Password Akun Anda')
             ->view('emails.member.approved');
     }
 }

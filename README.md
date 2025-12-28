@@ -82,7 +82,7 @@ make install
 #### 1. Clone the Repository
 
 ```bash
-git clone git@github.com:AlhikamWarsawa/e-sport.git
+git clone git@github.com:zygmacore/e-sport.git
 cd e-sport
 ```
 

@@ -26,45 +26,13 @@ install:
 g:
 	git pull
 	git add .
-	git commit -m "Admin Logs + Settings + Unit Test"
+	git commit -m "Documentation + Terraform"
 	git push -u origin main
 
-# CMD Laravel Pake Ini
+# Use Command
 app:
 	docker exec -it laravel_app bash
 
-# Docker Commands
-
-up:
-	docker compose up -d
-
-down:
-	docker compose down
-
-restart:
-	docker compose down && docker compose up -d
-
-mysql:
-	docker exec -it mysql_laravel mysql -u root -p
-
-# Laravel Commands
-
-migrate:
-	docker exec -it laravel_app php artisan migrate:fresh
-	docker exec -it laravel_app php artisan migrate
-
-serve:
-	docker exec -it laravel_app php artisan serve --host=0.0.0.0 --port=8000
-
-start:
-	docker compose up -d
-	docker exec -it laravel_app php artisan serve --host=0.0.0.0 --port=8000
-
-refresh:
-	docker exec -it laravel_app php artisan optimize:clear
-
-tinker:
-	docker exec -it laravel_app php artisan tinker
-
+# Other
 tunnel:
 	ngrok start web1

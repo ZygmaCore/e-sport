@@ -22,3 +22,12 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+*.json
+gcp-key.json
+ngrok.yml
+.ngrok/
